@@ -1,4 +1,4 @@
-package com.apache.cordova.plugins.serial;
+package org.apache.cordova.plugins.serial;
 
 import org.apache.cordova.CallbackContext;
 
