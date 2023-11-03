@@ -5,20 +5,22 @@ Want a module for your Arduino board that provides:
 - Power
 - High-res Touch Interface
 - Storage
-- *AND* connectivity? (WiFi + 3G + Bluetooth)
+- _AND_ connectivity? (WiFi + 3G + Bluetooth)
 
 Hey, why not just use your Android phone/tablet?
 
-This Cordova/Phonegap plugin allows two-way serial communication using *USB On-The-Go* (OTG) from your Android device to your Arduino board or other USB-powered serial IO device.
+This Cordova/Phonegap plugin allows two-way serial communication using _USB On-The-Go_ (OTG) from your Android device to your Arduino board or other USB-powered serial IO device.
 
 And that means that ability to give your Arduino project a mobile app (web-view) interface as well as powering it using the rechargeable battery on your phone!
 
 ## Install it
+
 From the root folder of your cordova project, run :
 
 ```sh
 cordova plugin add @red-mobile/cordova-plugin-usb-serial
 ```
+
 ### unisntall it
 
 ```sh
@@ -73,13 +75,14 @@ Register a callback that will be invoked when the driver reads incoming data fro
 
 ```js
 serial.registerReadCallback(
-	function success(data){
-		var view = new Uint8Array(data);
-		console.log(view);
-	},
-	function error(){
-		new Error("Failed to register read callback");
-	});
+  function success(data) {
+    var view = new Uint8Array(data);
+    console.log(view);
+  },
+  function error() {
+    new Error("Failed to register read callback");
+  },
+);
 ```
 
 And finally close the port:
@@ -93,28 +96,25 @@ serial.close(function success(), function error())
 A callback-ish example.
 
 ```js
-var errorCallback = function(message) {
-    alert('Error: ' + message);
+var errorCallback = function (message) {
+  alert("Error: " + message);
 };
 
-serial.requestPermission(
-	function(successMessage) {
-    	serial.open(
-        	{baudRate: 9600},
-            function(successMessage) {
-        		serial.write(
-                	'1',
-                    function(successMessage) {
-                    	alert(successMessage);
-                    },
-                    errorCallback
-        		);
-        	},
-        	errorCallback
-    	);
+serial.requestPermission(function (successMessage) {
+  serial.open(
+    { baudRate: 9600 },
+    function (successMessage) {
+      serial.write(
+        "1",
+        function (successMessage) {
+          alert(successMessage);
+        },
+        errorCallback,
+      );
     },
-    errorCallback
-);
+    errorCallback,
+  );
+}, errorCallback);
 ```
 
 ## A Complete Example
@@ -122,27 +122,33 @@ serial.requestPermission(
 Here is your `index.html`:
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <link rel="stylesheet" type="text/css" href="css/index.css">
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>Potentiometer value</h1>
-            <p>Value <span id="pot">...</span></p>
-            <p id="delta">...</p>
-            <button id="on">On</button>
-            <button id="off">Off</button>
-        </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-    </body>
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta
+      name="viewport"
+      content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"
+    />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <title>Hello World</title>
+  </head>
+  <body>
+    <div class="app">
+      <h1>Potentiometer value</h1>
+      <p>Value <span id="pot">...</span></p>
+      <p id="delta">...</p>
+      <button id="on">On</button>
+      <button id="off">Off</button>
+    </div>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
 </html>
 ```
 
@@ -150,78 +156,78 @@ Here is the `index.js` file:
 
 ```js
 var app = {
-    initialize: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    onDeviceReady: function() {
-        var potText = document.getElementById('pot');
-        var delta = document.getElementById('delta');
-        var on = document.getElementById('on');
-        var off = document.getElementById('off');
-        var open = false;
-        var str = '';
-        var lastRead = new Date();
+  initialize: function () {
+    document.addEventListener("deviceready", this.onDeviceReady, false);
+  },
+  onDeviceReady: function () {
+    var potText = document.getElementById("pot");
+    var delta = document.getElementById("delta");
+    var on = document.getElementById("on");
+    var off = document.getElementById("off");
+    var open = false;
+    var str = "";
+    var lastRead = new Date();
 
-        var errorCallback = function(message) {
-            alert('Error: ' + message);
-        };
-        // request permission first
-        serial.requestPermission(
-            // if user grants permission
-            function(successMessage) {
-                // open serial port
-                serial.open(
-                    {baudRate: 9600},
-                    // if port is succesfuly opened
-                    function(successMessage) {
-                        open = true;
-                        // register the read callback
-                        serial.registerReadCallback(
-                            function success(data){
-                                // decode the received message
-                                var view = new Uint8Array(data);
-                                if(view.length >= 1) {
-                                    for(var i=0; i < view.length; i++) {
-                                        // if we received a \n, the message is complete, display it
-                                        if(view[i] == 13) {
-                                            // check if the read rate correspond to the arduino serial print rate
-                                            var now = new Date();
-                                            delta.innerText = now - lastRead;
-                                            lastRead = now;
-                                            // display the message
-                                            var value = parseInt(str);
-                                            pot.innerText = value;
-                                            str = '';
-                                        }
-                                        // if not, concatenate with the begening of the message
-                                        else {
-                                            var temp_str = String.fromCharCode(view[i]);
-                                            var str_esc = escape(temp_str);
-                                            str += unescape(str_esc);
-                                        }
-                                    }
-                                }
-                            },
-                            // error attaching the callback
-                            errorCallback
-                        );
-                    },
-                    // error opening the port
-                    errorCallback
-                );
-            },
-            // user does not grant permission
-            errorCallback
+    var errorCallback = function (message) {
+      alert("Error: " + message);
+    };
+    // request permission first
+    serial.requestPermission(
+      // if user grants permission
+      function (successMessage) {
+        // open serial port
+        serial.open(
+          { baudRate: 9600 },
+          // if port is succesfuly opened
+          function (successMessage) {
+            open = true;
+            // register the read callback
+            serial.registerReadCallback(
+              function success(data) {
+                // decode the received message
+                var view = new Uint8Array(data);
+                if (view.length >= 1) {
+                  for (var i = 0; i < view.length; i++) {
+                    // if we received a \n, the message is complete, display it
+                    if (view[i] == 13) {
+                      // check if the read rate correspond to the arduino serial print rate
+                      var now = new Date();
+                      delta.innerText = now - lastRead;
+                      lastRead = now;
+                      // display the message
+                      var value = parseInt(str);
+                      pot.innerText = value;
+                      str = "";
+                    }
+                    // if not, concatenate with the begening of the message
+                    else {
+                      var temp_str = String.fromCharCode(view[i]);
+                      var str_esc = escape(temp_str);
+                      str += unescape(str_esc);
+                    }
+                  }
+                }
+              },
+              // error attaching the callback
+              errorCallback,
+            );
+          },
+          // error opening the port
+          errorCallback,
         );
+      },
+      // user does not grant permission
+      errorCallback,
+    );
 
-        on.onclick = function() {
-            console.log('click');
-            if (open) serial.write('1');
-        };
-        off.onclick = function() {
-            if (open) serial.write('0');
-        }
-    }
+    on.onclick = function () {
+      console.log("click");
+      if (open) serial.write("1");
+    };
+    off.onclick = function () {
+      if (open) serial.write("0");
+    };
+  },
 };
 
 app.initialize();
