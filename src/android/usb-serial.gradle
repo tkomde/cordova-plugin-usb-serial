@@ -1,0 +1,10 @@
+dependencies {
+    implementation files('libs/usb-serial-for-android-3.7.0.aar')
+}
+
+android {
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+}

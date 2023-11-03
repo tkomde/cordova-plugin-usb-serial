@@ -19,8 +19,10 @@
     "cordova-android"
   ],
   "scripts": {
-    "test": "npm run jshint",
-    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src"
+    "test:clean": "rimraf testapp/node_modules testapp/plugins testapp/platforms testapp/temp-module-copy",
+    "test:install": "cd testapp && npm i",
+    "test:android": "cd testapp && cordova platform add android && cordova prepare android && cordova build",
+    "test:build": "run-s test:clean test:install test:android"
   },
   "engines": {
     "cordova": ">=10.0.0"
@@ -32,7 +34,8 @@
   },
   "homepage": "https://github.com/okhiroyuki/cordova-plugin-usb-serial#readme",
   "devDependencies": {
-    "jshint": "^2.12.0"
+    "npm-run-all2": "^6.1.1",
     "prettier": "^3.0.3",
+    "rimraf": "^5.0.5"
   }
 }
