@@ -280,7 +280,7 @@ public class Serial extends CordovaPlugin {
 					Log.d(TAG, data);
 					byte[] buffer = data.getBytes();
 					port.write(buffer, 1000);
-					callbackContext.success("character written.");
+					callbackContext.success(buffer.length + "character written.");
 				}
 				catch (IOException | NullPointerException e) {
 					// deal with error
@@ -307,7 +307,7 @@ public class Serial extends CordovaPlugin {
 					Log.d(TAG, data);
 					byte[] buffer = hexStringToByteArray(data);
 					port.write(buffer, 1000);
-					callbackContext.success("bytes written.");
+					callbackContext.success(buffer.length + "bytes written.");
 				}
 				catch (IOException | StringIndexOutOfBoundsException | NullPointerException e) {
 					// deal with error
