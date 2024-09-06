@@ -200,15 +200,34 @@ public class Serial extends CordovaPlugin {
 					driver = availableDrivers.get(0);
 					UsbDevice device = driver.getDevice();
 					// create the intent that will be used to get the permission
-					PendingIntent pendingIntent = PendingIntent.getBroadcast(cordova.getActivity(), 0, new Intent(UsbBroadcastReceiver.USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
+					//PendingIntent pendingIntent = PendingIntent.getBroadcast(cordova.getActivity(), 0, new Intent(UsbBroadcastReceiver.USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
 					// and a filter on the permission we ask
-					IntentFilter filter = new IntentFilter();
-					filter.addAction(UsbBroadcastReceiver.USB_PERMISSION);
+					//IntentFilter filter = new IntentFilter();
+					//filter.addAction(UsbBroadcastReceiver.USB_PERMISSION);
 					// this broadcast receiver will handle the permission results
 					UsbBroadcastReceiver usbReceiver = new UsbBroadcastReceiver(callbackContext, cordova.getActivity());
-					cordova.getActivity().registerReceiver(usbReceiver, filter);
+					//cordova.getActivity().registerReceiver(usbReceiver, filter);
 					// finally ask for the permission
-					manager.requestPermission(device, pendingIntent);
+					//manager.requestPermission(device, pendingIntent);
+
+
+          Intent explicitIntent = new Intent(UsbBroadcastReceiver.ACTION_USB_PERMISSION);
+          explicitIntent.setPackage(cordova.getActivity().getPackageName()); // Make Intent explicit
+          PendingIntent permissionIntent = PendingIntent.getBroadcast(
+              cordova.getActivity().getBaseContext(),
+              0,
+              explicitIntent,
+              PendingIntent.FLAG_MUTABLE
+          );
+          
+          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {  // TIRAMISU is Android 13 / API 33
+              cordova.getActivity().registerReceiver(broadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+          } else {
+              cordova.getActivity().registerReceiver(broadcastReceiver, filter);
+          }
+          
+          manager.requestPermission(device, permissionIntent);
+          
 				}
 				else {
 					// no available drivers
