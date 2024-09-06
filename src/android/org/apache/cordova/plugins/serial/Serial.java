@@ -221,9 +221,9 @@ public class Serial extends CordovaPlugin {
           );
           
           if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {  // TIRAMISU is Android 13 / API 33
-              cordova.getActivity().registerReceiver(UsbBroadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+              cordova.getActivity().registerReceiver(usbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
           } else {
-              cordova.getActivity().registerReceiver(UsbBroadcastReceiver, filter);
+              cordova.getActivity().registerReceiver(usbReceiver, filter);
           }
           
           manager.requestPermission(device, permissionIntent);
