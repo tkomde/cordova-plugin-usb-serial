@@ -202,8 +202,8 @@ public class Serial extends CordovaPlugin {
 					// create the intent that will be used to get the permission
 					//PendingIntent pendingIntent = PendingIntent.getBroadcast(cordova.getActivity(), 0, new Intent(UsbBroadcastReceiver.USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
 					// and a filter on the permission we ask
-					//IntentFilter filter = new IntentFilter();
-					//filter.addAction(UsbBroadcastReceiver.USB_PERMISSION);
+					IntentFilter filter = new IntentFilter();
+					filter.addAction(UsbBroadcastReceiver.USB_PERMISSION);
 					// this broadcast receiver will handle the permission results
 					UsbBroadcastReceiver usbReceiver = new UsbBroadcastReceiver(callbackContext, cordova.getActivity());
 					//cordova.getActivity().registerReceiver(usbReceiver, filter);
@@ -211,7 +211,7 @@ public class Serial extends CordovaPlugin {
 					//manager.requestPermission(device, pendingIntent);
 
 
-          Intent explicitIntent = new Intent(UsbBroadcastReceiver.ACTION_USB_PERMISSION);
+          Intent explicitIntent = new Intent(UsbBroadcastReceiver.USB_PERMISSION);
           explicitIntent.setPackage(cordova.getActivity().getPackageName()); // Make Intent explicit
           PendingIntent permissionIntent = PendingIntent.getBroadcast(
               cordova.getActivity().getBaseContext(),
@@ -221,9 +221,9 @@ public class Serial extends CordovaPlugin {
           );
           
           if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {  // TIRAMISU is Android 13 / API 33
-              cordova.getActivity().registerReceiver(broadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+              cordova.getActivity().registerReceiver(UsbBroadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
           } else {
-              cordova.getActivity().registerReceiver(broadcastReceiver, filter);
+              cordova.getActivity().registerReceiver(UsbBroadcastReceiver, filter);
           }
           
           manager.requestPermission(device, permissionIntent);
