@@ -44,5 +44,14 @@ const serial = {
       [],
     );
   },
+  detached: function (successCallback, errorCallback) {
+    cordova.exec(
+      successCallback,
+      errorCallback,
+      "Serial",
+      "detached",
+      [],
+    );
+  },
 };
 module.exports = serial;
