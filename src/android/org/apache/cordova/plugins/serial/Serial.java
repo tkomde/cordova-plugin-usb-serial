@@ -52,6 +52,7 @@ public class Serial extends CordovaPlugin {
 	private static final String ACTION_CLOSE = "closeSerial";
 	private static final String ACTION_READ_CALLBACK = "registerReadCallback";
   private static final String ACTION_DETACHED = "detached";
+  private static final String ACTION_ATTACHED = "attached";
 
 	// UsbManager instance to deal with permission and opening
 	private UsbManager manager;
@@ -475,7 +476,7 @@ public class Serial extends CordovaPlugin {
 	 * @param callbackContext the cordova {@link CallbackContext}
 	 */
 	private void registerReadCallback(final CallbackContext callbackContext) {
-		Log.d(TAG, "Registering callback");
+		Log.d(TAG, "Registering read callback");
 		cordova.getThreadPool().execute(new Runnable() {
 			public void run() {
 				Log.d(TAG, "Registering Read Callback");
@@ -495,11 +496,28 @@ public class Serial extends CordovaPlugin {
 	 * @param callbackContext the cordova {@link CallbackContext}
 	 */
 	private void detached(final CallbackContext callbackContext) {
-		Log.d(TAG, "Registering callback");
+		Log.d(TAG, "Registering detached callback");
 		cordova.getThreadPool().execute(new Runnable() {
 			public void run() {
 				IntentFilter filterAttachDetach = new IntentFilter();
 				filterAttachDetach.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+				// this broadcast receiver will handle the results
+				UsbBroadcastReceiver usbReceiver = new UsbBroadcastReceiver(callbackContext, cordova.getActivity());
+				cordova.getActivity().registerReceiver(usbReceiver, filterAttachDetach);
+			}
+		});
+	}
+
+	/**
+	 * BroadcastReceiver for USB attached
+	 * @param callbackContext the cordova {@link CallbackContext}
+	 */
+	private void attached(final CallbackContext callbackContext) {
+		Log.d(TAG, "Registering attached callback");
+		cordova.getThreadPool().execute(new Runnable() {
+			public void run() {
+				IntentFilter filterAttachDetach = new IntentFilter();
+				filterAttachDetach.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
 				// this broadcast receiver will handle the results
 				UsbBroadcastReceiver usbReceiver = new UsbBroadcastReceiver(callbackContext, cordova.getActivity());
 				cordova.getActivity().registerReceiver(usbReceiver, filterAttachDetach);

@@ -53,5 +53,14 @@ const serial = {
       [],
     );
   },
+  attached: function (successCallback, errorCallback) {
+    cordova.exec(
+      successCallback,
+      errorCallback,
+      "Serial",
+      "attached",
+      [],
+    );
+  },
 };
 module.exports = serial;
