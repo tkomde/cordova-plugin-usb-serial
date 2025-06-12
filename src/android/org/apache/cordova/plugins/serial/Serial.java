@@ -146,6 +146,11 @@ public class Serial extends CordovaPlugin {
 			detached(callbackContext);
 			return true;
 		}
+		// Receive USB device attach
+		else if (ACTION_ATTACHED.equals(action)) {
+			attached(callbackContext);
+			return true;
+		}
 		// the action doesn't exist
 		return false;
 	}
