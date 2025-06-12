@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-    id="cordova-plugin-usb-serial"
-    version="2.1.0">
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" id="cordova-plugin-usb-serial" version="2.1.1">
     <name>Serial</name>
     <description>Cordova plugin to communicate with the android USB serial port</description>
     <license>MIT</license>

@@ -52,7 +52,7 @@ public class Serial extends CordovaPlugin {
 	private static final String ACTION_CLOSE = "closeSerial";
 	private static final String ACTION_READ_CALLBACK = "registerReadCallback";
   private static final String ACTION_DETACHED = "detached";
-  private static final String ACTION_ATTACHED = "attached";
+  //private static final String ACTION_ATTACHED = "attached";
 
 	// UsbManager instance to deal with permission and opening
 	private UsbManager manager;
@@ -146,11 +146,12 @@ public class Serial extends CordovaPlugin {
 			detached(callbackContext);
 			return true;
 		}
+		/* not works
 		// Receive USB device attach
 		else if (ACTION_ATTACHED.equals(action)) {
 			attached(callbackContext);
 			return true;
-		}
+		}*/
 		// the action doesn't exist
 		return false;
 	}
@@ -517,6 +518,7 @@ public class Serial extends CordovaPlugin {
 	 * BroadcastReceiver for USB attached
 	 * @param callbackContext the cordova {@link CallbackContext}
 	 */
+	/* not works
 	private void attached(final CallbackContext callbackContext) {
 		Log.d(TAG, "Registering attached callback");
 		cordova.getThreadPool().execute(new Runnable() {
@@ -528,7 +530,7 @@ public class Serial extends CordovaPlugin {
 				cordova.getActivity().registerReceiver(usbReceiver, filterAttachDetach);
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Paused activity handler
